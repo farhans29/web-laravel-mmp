@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Cross-Origin Resource Sharing (CORS) Configuration
@@ -15,20 +14,130 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    /*
+    |--------------------------------------------------------------------------
+    | Paths
+    |--------------------------------------------------------------------------
+    |
+    | The paths that should be accessible via CORS. You can use wildcards (*)
+    | to match multiple paths or specific endpoints.
+    |
+    */
+    'paths' => [
+        'api/*',
+        'sanctum/csrf-cookie',
+        'login',
+        'logout',
+        'register',
+        'password/*',
+    ],
 
-    'allowed_methods' => ['*'],
+    /*
+    |--------------------------------------------------------------------------
+    | Allowed HTTP Methods
+    |--------------------------------------------------------------------------
+    |
+    | The methods the client is allowed to use with cross-origin requests.
+    |
+    */
+    'allowed_methods' => [
+        'POST',
+        'GET',
+        'OPTIONS',
+        'PUT',
+        'PATCH',
+        'DELETE',
+    ],
 
-    'allowed_origins' => ['*'],
+    /*
+    |--------------------------------------------------------------------------
+    | Allowed Origins
+    |--------------------------------------------------------------------------
+    |
+    | The domains that are allowed to access your application. For production,
+    | replace the wildcard (*) with your actual domain names.
+    |
+    */
+    'allowed_origins' => array_filter(explode(
+        ',',
+        env('CORS_ALLOWED_ORIGINS', 'http://localhost:3000,http://localhost:8080')
+    )),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Allowed Origin Patterns
+    |--------------------------------------------------------------------------
+    |
+    | You can use regular expressions to match allowed origins.
+    |
+    */
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['*'],
+    /*
+    |--------------------------------------------------------------------------
+    | Allowed Headers
+    |--------------------------------------------------------------------------
+    |
+    | The headers that are allowed in the request.
+    |
+    */
+    'allowed_headers' => [
+        'Content-Type',
+        'X-Auth-Token',
+        'Origin',
+        'Authorization',
+        'X-Requested-With',
+        'Accept',
+        'X-CSRF-TOKEN',
+        'X-XSRF-TOKEN',
+    ],
 
-    'exposed_headers' => [],
+    /*
+    |--------------------------------------------------------------------------
+    | Exposed Headers
+    |--------------------------------------------------------------------------
+    |
+    | Headers that are allowed to be exposed to the web browser.
+    |
+    */
+    'exposed_headers' => [
+        'Authorization',
+        'X-RateLimit-Limit',
+        'X-RateLimit-Remaining',
+        'X-RateLimit-Reset',
+    ],
 
-    'max_age' => 0,
+    /*
+    |--------------------------------------------------------------------------
+    | Max Age
+    |--------------------------------------------------------------------------
+    |
+    | Indicates how long (in seconds) the results of a preflight request can be
+    | cached in the browser.
+    |
+    */
+    'max_age' => env('CORS_MAX_AGE', 86400), // 24 hours
 
-    'supports_credentials' => false,
+    /*
+    |--------------------------------------------------------------------------
+    | Supports Credentials
+    |--------------------------------------------------------------------------
+    |
+    | Indicates whether the browser should include credentials (cookies, HTTP
+    | authentication, and client-side SSL certificates) in the requests.
+    |
+    */
+    'supports_credentials' => env('CORS_SUPPORTS_CREDENTIALS', true),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Forced Paths
+    |--------------------------------------------------------------------------
+    |
+    | Paths that should always be processed by the CORS middleware.
+    |
+    */
+    'forced_paths' => [
+        'api/*',
+    ],
 ];
