@@ -16,10 +16,10 @@ class InventoryController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-
         $perPage = $request->input('per_page', 5);
 
         $query = MInventoryAsset::query();
+        $query->where('aktifyn', 'Y');
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -34,6 +34,7 @@ class InventoryController extends Controller
 
         return view('pages/warehouse/inventory/index_list', compact('inventories', 'perPage', 'search'));
     }
+
 
     public function indexNew(Request $request)
     {

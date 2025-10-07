@@ -1,209 +1,222 @@
 <x-app-layout>
-    <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-        <div class="flex items-center justify-between">
-            <h2 class="text-3xl font-semibold">Inventory Management</h2>
-        </div>
-
-        <div id="containerAccount" class="bg-white shadow-md rounded-lg overflow-hidden mt-8">
-            <div class="flex justify-between items-center px-6 py-4 bg-gray-50">
-                <h2 class="text-lg font-semibold text-gray-900">Inventory List</h2>
-
-                <div class="flex items-center">
-                    <div class="relative">
-                        <form method="GET" action="{{ route('index.inventory') }}">
-                            <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
-                                placeholder="Search..."
-                                class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-48">
-                            <div class="absolute left-3 top-2.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+    <div class="min-h-screen px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto"
+        style="background-image: url('/images/background_02.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+        <div class="sticky top-0 z-20 mb-6">
+            <div class="flex items-center space-x-3 px-6 py-4">
+                <h2
+                    class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent tracking-wide">
+                    Inventory Management
+                </h2>
             </div>
 
-            <div class="table-responsive">
-                <table id="inventoryTable" class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+            <div id="headerAccount"
+                class="bg-white shadow-md rounded-2xl px-6 py-5 border border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4 sticky top-1 z-30">
+                <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-indigo-500" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                    </svg>
+                    Inventory List
+                </h2>
+
+                <!-- 🔍 Search Box -->
+                <div class="relative w-full sm:w-72">
+                    <form method="GET" action="{{ route('index.inventory') }}">
+                        <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
+                            placeholder="Search inventory..."
+                            class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-sm">
+                        <div class="absolute left-3 top-2.5 text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="containerAccount" class="bg-white shadow-lg rounded-2xl overflow-hidden mt-6 border border-gray-100">
+            <div class="overflow-x-auto">
+                <table id="inventoryTable" class="min-w-full text-sm text-left text-gray-700">
+                    <thead class="bg-gray-100 text-gray-600 uppercase text-xs sticky top-0 z-10">
                         <tr>
-                            <th
-                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                ID Inventory</th>
-                            <th
-                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Category</th>
-                            <th
-                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Name</th>
-                            <th
-                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Qty</th>
-                            <th
-                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Unit</th>
-                            <th
-                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Weight</th>
-                            <th
-                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Price List</th>
-                            <th
-                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Actions</th>
+                            <th class="px-6 py-3 text-center font-semibold">ID Inventory</th>
+                            <th class="px-6 py-3 text-center font-semibold">Category</th>
+                            <th class="px-6 py-3 text-center font-semibold">Name</th>
+                            <th class="px-6 py-3 text-center font-semibold">Qty</th>
+                            <th class="px-6 py-3 text-center font-semibold">Unit</th>
+                            <th class="px-6 py-3 text-center font-semibold">Weight</th>
+                            <th class="px-6 py-3 text-center font-semibold">Price List</th>
+                            <th class="px-6 py-3 text-center font-semibold">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody>
                         @foreach ($inventories as $inventory)
-                            <tr class="hover:bg-gray-100 odd:bg-gray-100 even:bg-white">
-                                <td class="px-6 py-4 whitespace-nowrap">{{ $inventory->id_inventory }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap">{{ $inventory->category }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap">{{ $inventory->name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    {{ number_format($inventory->qty, 0, '', '.') }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center">{{ $inventory->unit }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <tr
+                                class="transition hover:bg-indigo-50 border-b border-gray-100 even:bg-white odd:bg-gray-50">
+                                <td class="px-6 py-3 text-center font-medium text-gray-800">
+                                    {{ $inventory->idassets }}</td>
+                                <td class="px-6 py-3 text-center">{{ $inventory->category }}</td>
+                                <td class="px-6 py-3 text-center">{{ $inventory->name }}</td>
+                                <td class="px-6 py-3 text-center">{{ number_format($inventory->qty, 0, '', '.') }}
+                                </td>
+                                <td class="px-6 py-3 text-center">{{ $inventory->unit }}</td>
+                                <td class="px-6 py-3 text-center">
                                     {{ number_format($inventory->net_weight, 0, '', '.') }} {{ $inventory->w_unit }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    {{ number_format($inventory->price_list, 0, '', '.') }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-left">
-                                    <div x-data="{ modalOpenDetail: false, modalData: {} }">
-                                        <button class="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 flex items-center justify-center gap-2 transition duration-150 cursor-pointer"
-                                            type="button"
-                                            @click.prevent="modalOpenDetail = true; modalData = { id: '{{ $inventory->id_inventory }}', name: '{{ $inventory->name }}', brand: '{{ $inventory->brand }}', model: '{{ $inventory->model }}', variant: '{{ $inventory->variant }}', qty: '{{ number_format($inventory->qty, 0, '', '.') }} {{ $inventory->unit }}', weight: '{{ number_format($inventory->net_weight, 0, '', '.') }} {{ $inventory->w_unit }}', price: '{{ number_format($inventory->price_list, 0, '', '.') }}'}"
-                                            aria-controls="feedback-modal1">View
-                                        </button>
-                                        <!-- Modal backdrop -->
-                                        <div class="fixed inset-0 backdrop-blur bg-opacity-30 z-50 transition-opacity"
-                                            x-show="modalOpenDetail"
-                                            x-transition:enter="transition ease-out duration-200"
-                                            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-                                            x-transition:leave="transition ease-out duration-100"
-                                            x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-                                            aria-hidden="true" x-cloak></div>
-                                        <!-- Modal dialog -->
-                                        <div id="feedback-modal1"
-                                            class="fixed inset-0 z-50 overflow-hidden flex items-center my-4 justify-center px-4 sm:px-6"
-                                            role="dialog" aria-modal="true" x-show="modalOpenDetail"
-                                            x-transition:enter="transition ease-in-out duration-200"
-                                            x-transition:enter-start="opacity-0 translate-y-4"
-                                            x-transition:enter-end="opacity-100 translate-y-0"
-                                            x-transition:leave="transition ease-in-out duration-200"
-                                            x-transition:leave-start="opacity-100 translate-y-0"
-                                            x-transition:leave-end="opacity-0 translate-y-4" x-cloak>
+                                <td class="px-6 py-3 text-center text-gray-800">
+                                    <span class="text-blue-600 font-bold">Rp</span>
+                                    <span class="font-medium">
+                                        {{ number_format($inventory->pricelist, 2, ',', '.') }}
+                                    </span>
+                                </td>
 
-                                            <div class="bg-white rounded shadow-lg overflow-auto w-1/3 max-h-full"
+                                <td class="px-6 py-3 text-center">
+                                    <div class="flex justify-center gap-2">
+                                        <!-- View -->
+                                        <div x-data="{ modalOpenDetail: false, modalData: {} }">
+                                            <!-- 🔹 Button Trigger -->
+                                            <button
+                                                class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-2 rounded-xl hover:from-blue-700 hover:to-blue-600 flex items-center gap-2 transition-all duration-300 shadow-md hover:shadow-lg"
+                                                @click.prevent="modalOpenDetail = true; modalData = { 
+                                                            id: '{{ $inventory->idassets }}', 
+                                                            name: '{{ $inventory->name }}', 
+                                                            brand: '{{ $inventory->brand }}', 
+                                                            model: '{{ $inventory->model }}', 
+                                                            variant: '{{ $inventory->variant }}', 
+                                                            qty: '{{ number_format($inventory->qty, 0, '', '.') }} {{ $inventory->unit }}', 
+                                                            weight: '{{ number_format($inventory->net_weight, 0, '', '.') }} {{ $inventory->w_unit }}', 
+                                                            price: '{{ number_format($inventory->pricelist, 2, ',', '.') }}'
+                                                        }">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                                    viewBox="0 0 20 20" fill="currentColor">
+                                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                                    <path fill-rule="evenodd"
+                                                        d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                            </button>
+
+                                            <!-- 🔹 Backdrop -->
+                                            <div x-show="modalOpenDetail" @click="modalOpenDetail = false"
+                                                x-transition:enter="transition ease-out duration-300"
+                                                x-transition:enter-start="opacity-0"
+                                                x-transition:enter-end="opacity-100"
+                                                x-transition:leave="transition ease-in duration-200"
+                                                x-transition:leave-start="opacity-100"
+                                                x-transition:leave-end="opacity-0"
+                                                class="fixed inset-0 bg-black/50 backdrop-blur-md z-50"
+                                                aria-hidden="true" x-cloak>
+                                            </div>
+
+                                            <!-- 🔹 Modal Container -->
+                                            <div x-show="modalOpenDetail"
+                                                x-transition:enter="transition ease-out duration-300"
+                                                x-transition:enter-start="opacity-0 scale-90"
+                                                x-transition:enter-end="opacity-100 scale-100"
+                                                x-transition:leave="transition ease-in duration-200"
+                                                x-transition:leave-start="opacity-100 scale-100"
+                                                x-transition:leave-end="opacity-0 scale-90"
+                                                class="fixed inset-0 z-50 flex items-center justify-center p-4"
                                                 @click.outside="modalOpenDetail = false"
-                                                @keydown.escape.window="modalOpenDetail = false">
-                                                <!-- Modal header -->
-                                                <div class="px-5 py-3 border-b border-slate-200" id="modalAddLpjDetail">
-                                                    <div class="flex justify-between items-center">
-                                                        <div class="font-semibold text-slate-800">Inventory Details
-                                                        </div>
-                                                        <button type="button"
-                                                            class="text-slate-400 hover:text-slate-500"
-                                                            @click="modalOpenDetail = false">
-                                                            <div class="sr-only">Close</div>
-                                                            <svg class="w-4 h-4 fill-current">
-                                                                <path
-                                                                    d="M7.95 6.536l4.242-4.243a1 1 0 111.415 1.414L9.364 7.95l4.243 4.242a1 1 0 11-1.415 1.415L7.95 9.364l-4.243 4.243a1 1 0 01-1.414-1.415L6.536 7.95 2.293 3.707a1 1 0 011.414-1.414L7.95 6.536z" />
+                                                @keydown.escape.window="modalOpenDetail = false" x-cloak>
+
+                                                <!-- 🔹 Modal Card -->
+                                                <div
+                                                    class="relative bg-white/70 backdrop-blur-xl border border-white/30 rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden ring-1 ring-white/20">
+
+                                                    <!-- Header -->
+                                                    <div
+                                                        class="px-6 py-4 border-b border-white/20 flex justify-between items-center bg-gradient-to-r from-blue-600/70 to-blue-400/60 text-white">
+                                                        <h2 class="text-lg font-semibold tracking-wide">Inventory
+                                                            Details</h2>
+                                                        <button @click="modalOpenDetail = false"
+                                                            class="text-white/80 hover:text-white transition-colors duration-200 p-1 rounded-full hover:bg-white/20">
+                                                            <svg class="w-6 h-6" fill="none" stroke="currentColor"
+                                                                viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                                                                </path>
                                                             </svg>
                                                         </button>
                                                     </div>
-                                                </div>
-                                                <!-- Modal content -->
-                                                <div class="modal-content text-xs px-5 py-4">
-                                                    <div class="p-4 space-y-4">
-                                                        <div class="grid md:grid-cols-2 md:gap-6">
-                                                            <div class="relative z-0 w-full mb-5 group">
-                                                                <input name="id_inventory" id="id_inventory"
-                                                                    autocomplete="off" readonly
-                                                                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                                                    placeholder=" " readonly x-model="modalData.id" />
-                                                                <label for="id_inventory"
-                                                                    class="peer-focus:font-medium absolute text-sm text-gray-400 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Inventory
-                                                                    Code</label>
+
+                                                    <!-- Content -->
+                                                    <div class="p-6 space-y-6 text-gray-800">
+                                                        <!-- ID & Name -->
+                                                        <div class="grid grid-cols-2 gap-6">
+                                                            <div>
+                                                                <p class="text-sm text-gray-500">Inventory Code</p>
+                                                                <p class="font-semibold text-gray-900"
+                                                                    x-text="modalData.id"></p>
                                                             </div>
-                                                            <div class="relative z-0 w-full mb-5 group">
-                                                                <input name="name" id="name" autocomplete="off"
-                                                                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                                                    placeholder=" " readonly
-                                                                    x-model="modalData.name" />
-                                                                <label for="name"
-                                                                    class="peer-focus:font-medium absolute text-sm text-gray-400 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Name</label>
+                                                            <div>
+                                                                <p class="text-sm text-gray-500">Name</p>
+                                                                <p class="font-semibold text-gray-900"
+                                                                    x-text="modalData.name"></p>
                                                             </div>
                                                         </div>
-                                                        <div class="grid md:grid-cols-3 md:gap-6">
-                                                            <div class="relative z-0 w-full mb-5 group">
-                                                                <input name="brand" id="brand"
-                                                                    autocomplete="off"
-                                                                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                                                    placeholder=" " readonly
-                                                                    x-model="modalData.brand" />
-                                                                <label for="brand"
-                                                                    class="peer-focus:font-medium absolute text-sm text-gray-400 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Brand</label>
+
+                                                        <!-- Brand, Model, Variant -->
+                                                        <div class="grid grid-cols-3 gap-6">
+                                                            <div>
+                                                                <p class="text-sm text-gray-500">Brand</p>
+                                                                <p class="font-semibold" x-text="modalData.brand">
+                                                                </p>
                                                             </div>
-                                                            <div class="relative z-0 w-full mb-5 group">
-                                                                <input name="model" id="model"
-                                                                    autocomplete="off"
-                                                                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                                                    placeholder=" " readonly
-                                                                    x-model="modalData.model" />
-                                                                <label for="model"
-                                                                    class="peer-focus:font-medium absolute text-sm text-gray-400 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Model</label>
+                                                            <div>
+                                                                <p class="text-sm text-gray-500">Model</p>
+                                                                <p class="font-semibold" x-text="modalData.model">
+                                                                </p>
                                                             </div>
-                                                            <div class="relative z-0 w-full mb-5 group">
-                                                                <input name="variant" id="variant"
-                                                                    autocomplete="off"
-                                                                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                                                    placeholder=" " readonly
-                                                                    x-model="modalData.variant" />
-                                                                <label for="variant"
-                                                                    class="peer-focus:font-medium absolute text-sm text-gray-400 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Variant</label>
+                                                            <div>
+                                                                <p class="text-sm text-gray-500">Variant</p>
+                                                                <p class="font-semibold" x-text="modalData.variant">
+                                                                </p>
                                                             </div>
                                                         </div>
-                                                        <div class="grid md:grid-cols-2 md:gap-6">
-                                                            <div class="relative z-0 w-full mb-5 group">
-                                                                <input type="text" name="unit" id="unit"
-                                                                    autocomplete="off"
-                                                                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                                                    placeholder=" " readonly
-                                                                    x-model="modalData.qty" />
-                                                                <label for="unit"
-                                                                    class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Quantity</label>
+
+                                                        <!-- Quantity & Weight -->
+                                                        <div class="grid grid-cols-2 gap-6">
+                                                            <div>
+                                                                <p class="text-sm text-gray-500">Quantity</p>
+                                                                <p class="font-semibold" x-text="modalData.qty">
+                                                                </p>
                                                             </div>
-                                                            <div class="relative z-0 w-full mb-5 group">
-                                                                <input type="text" name="nett_weight"
-                                                                    id="nett_weight"
-                                                                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                                                    placeholder=" " readonly
-                                                                    x-model="modalData.weight" />
-                                                                <label for="nett_weight"
-                                                                    class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Weight</label>
+                                                            <div>
+                                                                <p class="text-sm text-gray-500">Weight</p>
+                                                                <p class="font-semibold" x-text="modalData.weight">
+                                                                </p>
                                                             </div>
                                                         </div>
-                                                        <div class="relative z-0 w-full mb-5 group">
-                                                            <input type="text" name="msrp" id="msrp"
-                                                                autocomplete="off"
-                                                                class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                                                placeholder=" " readonly x-model="modalData.price"
-                                                                oninput="formatRupiah(this)" />
-                                                            <label for="msrp"
-                                                                class="peer-focus:font-medium absolute text-sm text-gray-400 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Price
-                                                                List</label>
+
+                                                        <!-- Price -->
+                                                        <div
+                                                            class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl p-4 border border-blue-200">
+                                                            <p class="text-sm text-gray-500 mb-1">Price List</p>
+                                                            <div class="text-2xl font-bold tracking-tight">
+                                                                <span class="text-blue-600">Rp</span>
+                                                                <span class="text-gray-800"
+                                                                    x-text="modalData.price"></span>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <!-- Modal footer -->
+
+                                                    <!-- Footer -->
                                                     <div
-                                                        class="px-5 py-3 border-t border-slate-200 flex justify-between mt-4">
+                                                        class="px-6 py-4 bg-white/50 border-t border-white/20 flex justify-end">
+                                                        <button @click="modalOpenDetail = false"
+                                                            class="px-5 py-2.5 bg-gradient-to-r from-gray-200 to-gray-100 text-gray-700 rounded-xl hover:from-gray-300 hover:to-gray-200 font-medium transition-all duration-200 shadow-sm hover:shadow-md">
+                                                            Close
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
                                 </td>
                             </tr>
@@ -211,25 +224,44 @@
                     </tbody>
                 </table>
             </div>
-            <div class="bg-gray-50 rounded p-4">
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <form method="GET" action="{{ route('index.inventory') }}">
-                        <div class="flex items-center">
-                            <label for="per_page" class="mr-2">Show:</label>
-                            <select name="per_page" id="per_page" onchange="this.form.submit()"
-                                class="border border-gray-300 rounded px-4 py-2 w-32">
-                                <option value="5" {{ $perPage == 5 ? 'selected' : '' }}>5</option>
-                                <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10</option>
-                                <option value="15" {{ $perPage == 15 ? 'selected' : '' }}>15</option>
-                                <option value="20" {{ $perPage == 20 ? 'selected' : '' }}>20</option>
-                            </select>
-                        </div>
-                    </form>
+        </div>
+
+        <div class="bg-white/80 backdrop-blur-md border border-gray-200 shadow-sm p-5 mt-5 rounded-2xl">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+                <!-- Show per page -->
+                <form method="GET" action="{{ route('index.inventory') }}" class="flex items-center gap-3">
+                    <label for="per_page" class="text-gray-600 font-medium">Tampilkan:</label>
+                    <div class="relative">
+                        <select name="per_page" id="per_page" onchange="this.form.submit()"
+                            class="appearance-none border border-gray-300 text-gray-700 rounded-xl px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200">
+                            <option value="5" {{ $perPage == 5 ? 'selected' : '' }}>5</option>
+                            <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10</option>
+                            <option value="15" {{ $perPage == 15 ? 'selected' : '' }}>15</option>
+                            <option value="20" {{ $perPage == 20 ? 'selected' : '' }}>20</option>
+                        </select>
+                        <span class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </span>
+                    </div>
+                </form>
+
+                <!-- 🔹 Responsive Pagination -->
+                <div class="flex justify-end">
+                    <!-- Desktop pagination -->
+                    <div class="hidden md:block">
+                        {{ $inventories->onEachSide(1)->links('vendor.pagination.tailwind-modern') }}
+                    </div>
+
+                    <!-- Mobile pagination -->
+                    <div class="block md:hidden">
+                        {{ $inventories->onEachSide(0)->links('vendor.pagination.mobile-pagination') }}
+                    </div>
                 </div>
 
-                <div class="mt-2">
-                    {{ $inventories->links() }}
-                </div>
             </div>
         </div>
     </div>
