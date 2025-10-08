@@ -41,7 +41,8 @@ class InventoryController extends Controller
         $search = $request->input('search');
         $perPage = $request->input('per_page', 5);
 
-        $query = MInventoryAsset::with(['brand', 'modelBrand']);
+        $query = MInventoryAsset::query();
+        $query->where('aktifyn', 'Y');
 
         if ($search) {
             $query->where(function ($q) use ($search) {

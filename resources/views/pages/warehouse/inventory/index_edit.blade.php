@@ -134,8 +134,8 @@
                                                 <!-- Modal content -->
                                                 <div class="modal-content text-xs px-5 py-4">
 
-                                                    <form method="POST"
-                                                        action="{{ route('inventory.update', $inventory->id_inventory) }}">
+                                                    <form method="POST">
+                                                        {{-- action="{{ route('inventory.update', $inventory->id_inventory) }}"> --}}
                                                         @csrf
                                                         @method('PUT')
                                                         <div class="grid md:grid-cols-2 md:gap-6">
