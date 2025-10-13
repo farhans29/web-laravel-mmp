@@ -39,13 +39,18 @@ class SupplierController extends Controller
             'ext_2' => ['nullable', 'string', 'max:20'],
             'pic_3' => ['nullable', 'string', 'max:100'],
             'ext_3' => ['nullable', 'string', 'max:20'],
+            'created_by' => 'nullable|integer|exists:users,id',
+            'updated_by' => 'nullable|integer|exists:users,id'
         ];
 
         // If this is an update, make fields optional
         if ($isUpdate) {
-            $rules = array_map(function ($rule) {
-                return array_merge($rule, ['sometimes']);
-            }, $rules);
+            // Make fields optional for update
+            foreach ($rules as $field => $rule) {
+                if ($field !== 'is_active') {
+                    $rules[$field] = str_replace('required|', '', $rule);
+                }
+            }
         }
 
         return $request->validate($rules);
@@ -115,6 +120,9 @@ class SupplierController extends Controller
             
             // Create the supplier with all validated data
             $supplier = new MSupplier($validated);
+            $supplier->updated_by = null;
+            $supplier->created_at = now()->timezone('+07:00');
+            $supplier->updated_at = null;
             $supplier->save();
 
             return response()->json(
@@ -218,7 +226,9 @@ class SupplierController extends Controller
         try {
             $supplier = MSupplier::findOrFail($id);
             $validated = $this->validateSupplier($request, true);
-            
+
+            $supplier->updated_at = now()->timezone('+07:00');
+
             // Update the supplier with the validated data
             $supplier->update($validated);
 
@@ -330,9 +340,12 @@ class SupplierController extends Controller
             // Get updated_by from request or use authenticated user's ID
             $updatedBy = $request->input('updated_by', auth()->id());
             
+            $supplier->updated_at = now()->timezone('+07:00');
+            $supplier->deleted_at = now()->timezone('+07:00');
+            
             $supplier->update([
                 'is_active' => 0,
-                'updated_by' => $updatedBy
+                'updated_by' => $updatedBy,
             ]);
 
             return response()->json([

@@ -12,6 +12,8 @@ return new class extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('m_supplier');
+
         Schema::create('m_supplier', function (Blueprint $table) {
             $table->increments('id_supplier')->primary();
             $table->string('name', 150);
@@ -35,6 +37,9 @@ return new class extends Migration
             $table->string('ext_2', 50)->nullable();
             $table->string('pic_3', 100)->nullable();
             $table->string('ext_3', 50)->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
+
             $table->timestamps();
             $table->softDeletes();
 
@@ -66,8 +71,10 @@ return new class extends Migration
             'ext_1' => '+123 123456789',
             'pic_2' => 'Jane Smith',
             'ext_2' => '+123 987654321',
-            'created_at' => now(),
-            'updated_at' => now()
+            'created_by' => 1,
+            'updated_by' => 1,
+            'created_at' => now()->timezone('+07:00'),
+            'updated_at' => now()->timezone('+07:00')
         ]);
     }
 

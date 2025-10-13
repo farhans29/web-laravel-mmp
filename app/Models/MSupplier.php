@@ -36,12 +36,16 @@ class MSupplier extends Model
         'pic_2',
         'ext_2',
         'pic_3',
-        'ext_3'
+        'ext_3',
+        'created_by',
+        'updated_by',
+        'deleted_at'
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'created_at' => 'datetime',
-        'updated_at' => 'datetime'
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime'
     ];
 }

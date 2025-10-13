@@ -30,7 +30,8 @@ class MInventory extends Model
         'WSPrice',
         'brand',
         'created_by',
-        'updated_by'
+        'updated_by',
+        'deleted_at'
     ];
 
     protected $casts = [
@@ -43,5 +44,6 @@ class MInventory extends Model
         'lastpurchase' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'deleted_at' => 'datetime'
     ];
 }

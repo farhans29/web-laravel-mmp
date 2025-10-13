@@ -78,6 +78,10 @@ class InventoryController extends Controller
             
             // Create the inventory with all validated data
             $inventory = new MInventory($validated);
+            $inventory->updated_by = null;
+            $inventory->created_at = now()->timezone('+07:00');
+            $inventory->updated_at = null;
+
             $inventory->save();
 
             return response()->json(
@@ -187,7 +191,9 @@ class InventoryController extends Controller
             if (!isset($updateData['updated_by'])) {
                 $updateData['updated_by'] = auth()->id();
             }
-            
+
+            $inventory->updated_at = now()->timezone('+07:00');
+
             // Update the inventory with the prepared data
             $inventory->update($updateData);
 
@@ -297,9 +303,12 @@ class InventoryController extends Controller
             // Get updated_by from request or use authenticated user's ID
             $updatedBy = $request->input('updated_by', auth()->id());
             
+            $inventory->updated_at = now()->timezone('+07:00');
+            $inventory->deleted_at = now()->timezone('+07:00');
+
             $inventory->update([
                 'is_active' => 0,
-                'updated_by' => $updatedBy
+                'updated_by' => $updatedBy,
             ]);
 
             return response()->json([
@@ -341,8 +350,8 @@ class InventoryController extends Controller
             'is_active' => 'boolean',
             'WSPrice' => 'required|numeric|min:0',
             'lastpurchase' => 'nullable|date',
-            'created_by' => 'required|integer|exists:users,id',
-            'updated_by' => 'required|integer|exists:users,id'
+            'created_by' => 'nullable|integer|exists:users,id',
+            'updated_by' => 'nullable|integer|exists:users,id'
         ];
 
         if ($isUpdate) {

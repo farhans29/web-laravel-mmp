@@ -12,6 +12,8 @@ return new class extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('m_inventory');
+
         Schema::create('m_inventory', function (Blueprint $table) {
             $table->string('id_inventory')->primary();
             $table->string('category', 100);
@@ -41,7 +43,7 @@ return new class extends Migration
 
         // Insert a dummy inventory item
         DB::table('m_inventory')->insert([
-            'id_inventory' => 'INV-' . date('Ymd') . '-001',
+            'id_inventory' => 'DUMMY-001',
             'category' => 'Dummy',
             'name' => 'Dummy Wireless Bluetooth Earbuds',
             'qty' => 50,
@@ -55,8 +57,10 @@ return new class extends Migration
             'is_active' => true,
             'WSPrice' => 200000,
             'brand' => 'Dummy',
-            'created_at' => now(),
-            'updated_at' => now()
+            'created_by' => 1,
+            'updated_by' => 1,
+            'created_at' => now()->timezone('+07:00'),
+            'updated_at' => now()->timezone('+07:00')
         ]);
     }
 
