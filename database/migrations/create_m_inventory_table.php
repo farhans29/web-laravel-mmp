@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -37,6 +38,26 @@ return new class extends Migration
             $table->index('is_active');
             $table->index('brand');
         });
+
+        // Insert a dummy inventory item
+        DB::table('m_inventory')->insert([
+            'id_inventory' => 'INV-' . date('Ymd') . '-001',
+            'category' => 'Dummy',
+            'name' => 'Dummy Wireless Bluetooth Earbuds',
+            'qty' => 50,
+            'unit' => 'pcs',
+            'hpp' => 150000,
+            'automargin' => 30.00,
+            'minsales' => 195000,
+            'pricelist' => 250000,
+            'currency' => 'IDR',
+            'lastpurchase' => now(),
+            'is_active' => true,
+            'WSPrice' => 200000,
+            'brand' => 'Dummy',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
     }
 
     /**
