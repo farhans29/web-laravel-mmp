@@ -38,232 +38,386 @@
             </div>
         </div>
 
+        <!-- Table Container -->
         <div id="containerAccount" class="bg-white shadow-lg rounded-2xl overflow-hidden mt-6 border border-gray-100">
             <div class="overflow-x-auto">
-                <table id="inventoryTable" class="min-w-full text-sm text-left text-gray-700">
-                    <thead class="bg-gray-100 text-gray-600 uppercase text-xs sticky top-0 z-10">
-                        <tr>
-                            <th class="px-6 py-3 text-center font-semibold">ID Inventory</th>
-                            <th class="px-6 py-3 text-center font-semibold">Category</th>
-                            <th class="px-6 py-3 text-center font-semibold">Name</th>
-                            <th class="px-6 py-3 text-center font-semibold">Qty</th>
-                            <th class="px-6 py-3 text-center font-semibold">Unit</th>
-                            <th class="px-6 py-3 text-center font-semibold">Weight</th>
-                            <th class="px-6 py-3 text-center font-semibold">Price List</th>
-                            <th class="px-6 py-3 text-center font-semibold">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($inventories as $inventory)
-                            <tr
-                                class="transition hover:bg-indigo-50 border-b border-gray-100 even:bg-white odd:bg-gray-50">
-                                <td class="px-6 py-3 text-center font-medium text-gray-800">
-                                    {{ $inventory->idassets }}</td>
-                                <td class="px-6 py-3 text-center">{{ $inventory->category }}</td>
-                                <td class="px-6 py-3 text-center">{{ $inventory->name }}</td>
-                                <td class="px-6 py-3 text-center">{{ number_format($inventory->qty, 0, '', '.') }}
-                                </td>
-                                <td class="px-6 py-3 text-center">{{ $inventory->unit }}</td>
-                                <td class="px-6 py-3 text-center">
-                                    {{ number_format($inventory->net_weight, 0, '', '.') }} {{ $inventory->w_unit }}
-                                </td>
-                                <td class="px-6 py-3 text-center text-gray-800">
-                                    <span class="text-blue-600 font-bold">Rp</span>
-                                    <span class="font-medium">
-                                        {{ number_format($inventory->pricelist, 2, ',', '.') }}
-                                    </span>
-                                </td>
+                <div x-data="{ modalOpenDetail: false, modalData: {} }">
 
-                                <td class="px-6 py-3 text-center">
-                                    <div class="flex justify-center gap-2">
-                                        <!-- View -->
-                                        <div x-data="{ modalOpenDetail: false, modalData: {} }">
-                                            <!-- 🔹 Button Trigger -->
-                                            <button
-                                                class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-2 rounded-xl hover:from-blue-700 hover:to-blue-600 flex items-center gap-2 transition-all duration-300 shadow-md hover:shadow-lg"
-                                                @click.prevent="modalOpenDetail = true; modalData = { 
-                                                            id: '{{ $inventory->idassets }}', 
-                                                            name: '{{ $inventory->name }}', 
-                                                            brand: '{{ $inventory->brand }}', 
-                                                            model: '{{ $inventory->model }}', 
-                                                            variant: '{{ $inventory->variant }}', 
-                                                            qty: '{{ number_format($inventory->qty, 0, '', '.') }} {{ $inventory->unit }}', 
-                                                            weight: '{{ number_format($inventory->net_weight, 0, '', '.') }} {{ $inventory->w_unit }}', 
-                                                            price: '{{ number_format($inventory->pricelist, 2, ',', '.') }}'
-                                                        }">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
-                                                    viewBox="0 0 20 20" fill="currentColor">
-                                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                                                    <path fill-rule="evenodd"
-                                                        d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                                                        clip-rule="evenodd" />
-                                                </svg>
-                                            </button>
+                    <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
+                        <thead class="bg-gray-100 text-gray-700">
+                            <tr>
+                                <th class="px-6 py-3 text-center">ID</th>
+                                <th class="px-6 py-3 text-center">Name</th>
+                                <th class="px-6 py-3 text-center">Category</th>
+                                <th class="px-6 py-3 text-center">Qty</th>
+                                <th class="px-6 py-3 text-center">Unit</th>
+                                <th class="px-6 py-3 text-center">Price</th>
+                                <th class="px-6 py-3 text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTableBody"></tbody>
+                    </table>
 
-                                            <!-- 🔹 Backdrop -->
-                                            <div x-show="modalOpenDetail" @click="modalOpenDetail = false"
-                                                x-transition:enter="transition ease-out duration-300"
-                                                x-transition:enter-start="opacity-0"
-                                                x-transition:enter-end="opacity-100"
-                                                x-transition:leave="transition ease-in duration-200"
-                                                x-transition:leave-start="opacity-100"
-                                                x-transition:leave-end="opacity-0"
-                                                class="fixed inset-0 bg-black/50 backdrop-blur-md z-50"
-                                                aria-hidden="true" x-cloak>
-                                            </div>
+                    <!-- 🔹 Modal Backdrop -->
+                    <div x-show="modalOpenDetail" @click="modalOpenDetail = false"
+                        x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
+                        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                        class="fixed inset-0 bg-black/50 backdrop-blur-md z-50" @click.outside="modalOpenDetail = false" aria-hidden="true" x-cloak>
+                    </div>
 
-                                            <!-- 🔹 Modal Container -->
-                                            <div x-show="modalOpenDetail"
-                                                x-transition:enter="transition ease-out duration-300"
-                                                x-transition:enter-start="opacity-0 scale-90"
-                                                x-transition:enter-end="opacity-100 scale-100"
-                                                x-transition:leave="transition ease-in duration-200"
-                                                x-transition:leave-start="opacity-100 scale-100"
-                                                x-transition:leave-end="opacity-0 scale-90"
-                                                class="fixed inset-0 z-50 flex items-center justify-center p-4"
-                                                @click.outside="modalOpenDetail = false"
-                                                @keydown.escape.window="modalOpenDetail = false" x-cloak>
+                    <!-- 🔹 Modal Container -->
+                    <div x-show="modalOpenDetail" x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100"
+                        x-transition:leave="transition ease-in duration-200"
+                        x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90"
+                        class="fixed inset-0 z-50 flex items-center justify-center p-4"
+                        @click.outside="modalOpenDetail = false" @keydown.escape.window="modalOpenDetail = false"
+                        x-cloak>
 
-                                                <!-- 🔹 Modal Card -->
-                                                <div
-                                                    class="relative bg-white/70 backdrop-blur-xl border border-white/30 rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden ring-1 ring-white/20">
-
-                                                    <!-- Header -->
-                                                    <div
-                                                        class="px-6 py-4 border-b border-white/20 flex justify-between items-center bg-gradient-to-r from-blue-600/70 to-blue-400/60 text-white">
-                                                        <h2 class="text-lg font-semibold tracking-wide">Inventory
-                                                            Details</h2>
-                                                        <button @click="modalOpenDetail = false"
-                                                            class="text-white/80 hover:text-white transition-colors duration-200 p-1 rounded-full hover:bg-white/20">
-                                                            <svg class="w-6 h-6" fill="none" stroke="currentColor"
-                                                                viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                                    stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                                                                </path>
-                                                            </svg>
-                                                        </button>
-                                                    </div>
-
-                                                    <!-- Content -->
-                                                    <div class="p-6 space-y-6 text-gray-800">
-                                                        <!-- ID & Name -->
-                                                        <div class="grid grid-cols-2 gap-6">
-                                                            <div>
-                                                                <p class="text-sm text-gray-500">Inventory Code</p>
-                                                                <p class="font-semibold text-gray-900"
-                                                                    x-text="modalData.id"></p>
-                                                            </div>
-                                                            <div>
-                                                                <p class="text-sm text-gray-500">Name</p>
-                                                                <p class="font-semibold text-gray-900"
-                                                                    x-text="modalData.name"></p>
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Brand, Model, Variant -->
-                                                        <div class="grid grid-cols-3 gap-6">
-                                                            <div>
-                                                                <p class="text-sm text-gray-500">Brand</p>
-                                                                <p class="font-semibold" x-text="modalData.brand">
-                                                                </p>
-                                                            </div>
-                                                            <div>
-                                                                <p class="text-sm text-gray-500">Model</p>
-                                                                <p class="font-semibold" x-text="modalData.model">
-                                                                </p>
-                                                            </div>
-                                                            <div>
-                                                                <p class="text-sm text-gray-500">Variant</p>
-                                                                <p class="font-semibold" x-text="modalData.variant">
-                                                                </p>
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Quantity & Weight -->
-                                                        <div class="grid grid-cols-2 gap-6">
-                                                            <div>
-                                                                <p class="text-sm text-gray-500">Quantity</p>
-                                                                <p class="font-semibold" x-text="modalData.qty">
-                                                                </p>
-                                                            </div>
-                                                            <div>
-                                                                <p class="text-sm text-gray-500">Weight</p>
-                                                                <p class="font-semibold" x-text="modalData.weight">
-                                                                </p>
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Price -->
-                                                        <div
-                                                            class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl p-4 border border-blue-200">
-                                                            <p class="text-sm text-gray-500 mb-1">Price List</p>
-                                                            <div class="text-2xl font-bold tracking-tight">
-                                                                <span class="text-blue-600">Rp</span>
-                                                                <span class="text-gray-800"
-                                                                    x-text="modalData.price"></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Footer -->
-                                                    <div
-                                                        class="px-6 py-4 bg-white/50 border-t border-white/20 flex justify-end">
-                                                        <button @click="modalOpenDetail = false"
-                                                            class="px-5 py-2.5 bg-gradient-to-r from-gray-200 to-gray-100 text-gray-700 rounded-xl hover:from-gray-300 hover:to-gray-200 font-medium transition-all duration-200 shadow-sm hover:shadow-md">
-                                                            Close
-                                                        </button>
-                                                    </div>
-                                                </div>
+                        <!-- 🔹 Modal Card -->
+                        <div
+                            class="relative bg-white/90 backdrop-blur-xl border border-white/40 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden ring-1 ring-white/30">
+                            <!-- Header -->
+                            <div
+                                class="px-6 py-5 border-b border-white/30 flex justify-between items-center bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-t-2xl">
+                                <div class="flex items-center space-x-3">
+                                    <div class="p-2 bg-white/20 rounded-xl"> <svg class="w-5 h-5 text-white"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+                                            </path>
+                                        </svg> </div>
+                                    <div>
+                                        <h2 class="text-xl font-bold tracking-tight">Inventory Details</h2>
+                                        <p class="text-blue-100 text-sm font-medium" x-text="modalData.id"></p>
+                                    </div>
+                                </div> <button @click="modalOpenDetail = false"
+                                    class="text-white/80 hover:text-white transition-all duration-200 p-2 rounded-xl hover:bg-white/20 active:scale-95">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg> </button>
+                            </div> <!-- Content -->
+                            <div class="p-6 space-y-6 text-gray-800 max-h-[70vh] overflow-y-auto">
+                                <!-- Product Information -->
+                                <div class="space-y-4">
+                                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Product
+                                        Information</h3>
+                                    <div class="grid grid-cols-1 gap-4">
+                                        <div class="bg-white/60 rounded-xl p-4 border border-gray-100 shadow-sm">
+                                            <p class="text-sm text-gray-500 mb-1">Product Name</p>
+                                            <p class="font-semibold text-gray-900 text-lg" x-text="modalData.name"></p>
+                                        </div>
+                                        <div class="bg-white/60 rounded-xl p-4 border border-gray-100 shadow-sm">
+                                            <p class="text-sm text-gray-500 mb-1">Category</p>
+                                            <p class="font-semibold text-gray-900 text-lg" x-text="modalData.category"></p>
+                                        </div>
+                                    </div>
+                                   
+                                </div> <!-- Inventory Details -->
+                                <div class="space-y-4">
+                                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Inventory
+                                        Details</h3>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="bg-white/60 rounded-xl p-4 border border-gray-100 shadow-sm">
+                                            <p class="text-sm text-gray-500 mb-1">Quantity</p>
+                                            <div class="flex items-center"> <span
+                                                    class="font-bold text-gray-900 text-xl mr-2"
+                                                    x-text="modalData.qty"></span>
+                                                <span
+                                                    class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-medium" x-text="modalData.unit"></span>
                                             </div>
                                         </div>
-
+                                        <div class="bg-white/60 rounded-xl p-4 border border-gray-100 shadow-sm">
+                                            <p class="text-sm text-gray-500 mb-1">Brand</p>
+                                            <p class="font-semibold text-gray-900" x-text="modalData.brand"></p>
+                                        </div>
                                     </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                                </div>
+                                <!-- Price Information -->
+                                <div class="space-y-4">
+                                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Price
+                                        Information</h3>
+                                    <div
+                                        class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-5 border border-blue-200 shadow-sm text-left">
+                                        <p class="text-sm text-gray-500 mb-1">Price List</p>
+                                        <div class="flex items-baseline justify-end">
+                                            <span class="text-blue-600 font-bold text-2xl mr-1"
+                                                x-text="modalData.currency === 'USD' ? '$' : 'Rp '"></span>
+                                            <span class="text-gray-800 font-bold text-3xl tracking-tight"
+                                                x-text="modalData.price"></span>
+                                        </div>
+                                    </div>
+                                </div>
 
-        <div class="bg-white/80 backdrop-blur-md border border-gray-200 shadow-sm p-5 mt-5 rounded-2xl">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-
-                <!-- Show per page -->
-                <form method="GET" action="{{ route('index.inventory') }}" class="flex items-center gap-3">
-                    <label for="per_page" class="text-gray-600 font-medium">Tampilkan:</label>
-                    <div class="relative">
-                        <select name="per_page" id="per_page" onchange="this.form.submit()"
-                            class="appearance-none border border-gray-300 text-gray-700 rounded-xl px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200">
-                            <option value="5" {{ $perPage == 5 ? 'selected' : '' }}>5</option>
-                            <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10</option>
-                            <option value="15" {{ $perPage == 15 ? 'selected' : '' }}>15</option>
-                            <option value="20" {{ $perPage == 20 ? 'selected' : '' }}>20</option>
-                        </select>
-                        <span class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </span>
-                    </div>
-                </form>
-
-                <!-- 🔹 Responsive Pagination -->
-                <div class="flex justify-end">
-                    <!-- Desktop pagination -->
-                    <div class="hidden md:block">
-                        {{ $inventories->onEachSide(1)->links('vendor.pagination.tailwind-modern') }}
-                    </div>
-
-                    <!-- Mobile pagination -->
-                    <div class="block md:hidden">
-                        {{ $inventories->onEachSide(0)->links('vendor.pagination.mobile-pagination') }}
+                            </div> <!-- Footer -->
+                            <div
+                                class="px-6 py-4 bg-white/70 border-t border-white/30 flex justify-end space-x-3 rounded-b-2xl">
+                                <button @click="modalOpenDetail = false"
+                                    class="px-5 py-2.5 bg-gradient-to-r from-gray-100 to-gray-50 text-gray-700 rounded-xl hover:from-gray-200 hover:to-gray-100 font-medium transition-all duration-200 shadow-sm hover:shadow border border-gray-200 active:scale-95">
+                                    Close </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
             </div>
         </div>
+
+        <!-- Table Footer -->
+        <div
+            class="bg-white/80 backdrop-blur-md border border-gray-200 shadow-sm p-5 mt-5 rounded-2xl flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+            <!-- 🔹 Show per page (aktif) -->
+            <div class="flex items-center gap-3">
+                <label for="perPage" class="text-gray-600 font-medium">Tampilkan:</label>
+                <div class="relative">
+                    <select id="perPage"
+                        class="appearance-none border border-gray-300 text-gray-700 rounded-xl px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200">
+                        <option value="5" selected>5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                    <span class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </span>
+                </div>
+            </div>
+
+            <!-- 🔹 Pagination -->
+            <div class="flex justify-end items-center gap-2 mt-4" id="paginationContainer">
+                <button id="prevPage"
+                    class="px-3 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-40 disabled:cursor-not-allowed transition">
+                    ◀
+                </button>
+
+                <div id="pageNumbers" class="flex items-center gap-1"></div>
+
+                <button id="nextPage"
+                    class="px-3 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-40 disabled:cursor-not-allowed transition">
+                    ▶
+                </button>
+            </div>
+        </div>
+
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const tableBody = document.getElementById('inventoryTableBody');
+            const perPageSelect = document.getElementById('perPage');
+            const prevBtn = document.getElementById('prevPage');
+            const nextBtn = document.getElementById('nextPage');
+            const pageNumbersContainer = document.getElementById('pageNumbers');
+            const searchInput = document.getElementById('searchInput');
+
+            let currentPage = 1;
+            let perPage = parseInt(perPageSelect.value);
+            let inventories = [];
+
+            // 🔹 Ambil data dari API
+            async function fetchInventories(keyword = '') {
+                tableBody.innerHTML =
+                    `<tr><td colspan="8" class="text-center py-4 text-gray-500">Loading...</td></tr>`;
+
+                try {
+                    let url = '/api/v1/inventory';
+                    if (keyword.trim() !== '') {
+                        url += `/${keyword}`; // Panggil endpoint show() dengan parameter
+                    }
+
+                    const response = await fetch(url);
+                    const result = await response.json();
+
+                    console.log('API Response:', result); // 👉 Debug bantu lihat struktur data
+
+                    // 🔹 Normalisasi hasil API agar selalu berbentuk array
+                    if (keyword.trim() === '') {
+                        inventories = Array.isArray(result.data ?? result) ?
+                            (result.data ?? result) : [result.data ?? result];
+                    } else {
+                        if (Array.isArray(result.data)) {
+                            inventories = result.data;
+                        } else if (result.data) {
+                            inventories = [result.data];
+                        } else if (Array.isArray(result)) {
+                            inventories = result;
+                        } else if (result) {
+                            inventories = [result];
+                        } else {
+                            inventories = [];
+                        }
+                    }
+
+                    // Jika tidak ada data, tampilkan "NO DATA"
+                    if (!inventories || inventories.length === 0) {
+                        tableBody.innerHTML =
+                            `<tr><td colspan="8" class="text-center py-6 text-gray-400 font-medium tracking-wide">No data found.</td></tr>`;
+                        pageNumbersContainer.innerHTML = '';
+                        prevBtn.disabled = true;
+                        nextBtn.disabled = true;
+                        return;
+                    }
+
+                    renderTable();
+                } catch (error) {
+                    console.error('Error fetching inventory:', error);
+                    tableBody.innerHTML =
+                        `<tr><td colspan="8" class="text-center py-4 text-red-500">Error loading data.</td></tr>`;
+                }
+            }
+
+            // 🔍 Filter data lokal di client
+            function filterInventories(keyword) {
+                keyword = keyword.toLowerCase();
+                const filteredData = inventories.filter(item =>
+                    item.name?.toLowerCase().includes(keyword) ||
+                    item.category?.toLowerCase().includes(keyword) ||
+                    item.brand?.toLowerCase().includes(keyword) ||
+                    item.model?.toLowerCase().includes(keyword)
+                );
+
+                inventories = filteredData;
+
+                if (filteredData.length === 0) {
+                    tableBody.innerHTML =
+                        `<tr><td colspan="8" class="text-center py-6 text-gray-400 font-medium tracking-wide">No data found.</td></tr>`;
+                    pageNumbersContainer.innerHTML = '';
+                    prevBtn.disabled = true;
+                    nextBtn.disabled = true;
+                    return;
+                }
+
+                currentPage = 1;
+                renderTable();
+            }
+
+            // 🔢 Render pagination
+            function renderPagination(totalPages) {
+                pageNumbersContainer.innerHTML = '';
+
+                const maxVisible = 5;
+                let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+                let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+                if (endPage - startPage < maxVisible - 1) {
+                    startPage = Math.max(1, endPage - maxVisible + 1);
+                }
+
+                for (let i = startPage; i <= endPage; i++) {
+                    const btn = document.createElement('button');
+                    btn.textContent = i;
+                    btn.className = `px-3 py-2 rounded-lg text-sm font-medium transition ${
+                    i === currentPage
+                        ? 'bg-blue-600 text-white shadow'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`;
+                    btn.addEventListener('click', () => {
+                        currentPage = i;
+                        renderTable();
+                    });
+                    pageNumbersContainer.appendChild(btn);
+                }
+            }
+
+            // 🧾 Render isi tabel
+            function renderTable() {
+                const start = (currentPage - 1) * perPage;
+                const end = start + perPage;
+                const pageData = inventories.slice(start, end);
+
+                if (!pageData || pageData.length === 0) {
+                    tableBody.innerHTML =
+                        `<tr><td colspan="8" class="text-center py-6 text-gray-400 font-medium tracking-wide">No data found.</td></tr>`;
+                    pageNumbersContainer.innerHTML = '';
+                    return;
+                }
+
+                tableBody.innerHTML = pageData.map(item => `
+                        <tr class="transition hover:bg-indigo-50 border-b border-gray-100 even:bg-white odd:bg-gray-50">
+                            <td class="px-6 py-3 text-center font-medium text-gray-800">${item.id_inventory ?? '-'}</td>
+                            <td class="px-6 py-3 text-center">${item.name ?? '-'}</td>
+                            <td class="px-6 py-3 text-center">${item.category ?? '-'}</td>
+                            <td class="px-6 py-3 text-center">${Number(item.qty ?? 0).toLocaleString('id-ID')}</td>
+                            <td class="px-6 py-3 text-center">${item.unit ?? '-'}</td>
+                            <td class="px-6 py-3 text-right text-gray-800">
+                                ${
+                                    item.currency === 'USD'
+                                        ? `<span class="text-blue-600 font-bold">$</span>
+                                                        <span class="font-medium">${Number(item.pricelist ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>`
+                                        : `<span class="text-blue-600 font-bold">Rp</span>
+                                                        <span class="font-medium">${Number(item.pricelist ?? 0).toLocaleString('id-ID', { minimumFractionDigits: 2 })}</span>`
+                                }
+                            </td>
+                            <td class="px-6 py-3 text-center">
+                                <button 
+                                    class="bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition"
+                                    @click.prevent="
+                                        modalOpenDetail = true;
+                                        modalData = {
+                                            id: '${item.id_inventory ?? '-'}',
+                                            name: '${item.name ?? '-'}',
+                                            brand: '${item.brand ?? '-'}',
+                                            category: '${item.category ?? '-'}',
+                                            qty: '${Number(item.qty ?? 0).toLocaleString('id-ID')}',
+                                            unit: '${item.unit ?? '-'}',
+                                            weight: '${Number(item.net_weight ?? 0).toLocaleString('id-ID')} ${item.w_unit ?? ''}',
+                                            currency: '${item.currency ?? '-'}',
+                                            price: '${Number(item.pricelist ?? 0).toLocaleString(item.currency === 'USD' ? 'en-US' : 'id-ID', { minimumFractionDigits: 2 })}'
+                                        }
+                                    ">
+                                    Detail
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+
+                const totalPages = Math.ceil(inventories.length / perPage);
+                renderPagination(totalPages);
+
+                prevBtn.disabled = currentPage === 1;
+                nextBtn.disabled = currentPage === totalPages;
+            }
+
+            // 🔄 Event listeners
+            searchInput.addEventListener('input', e => {
+                const keyword = e.target.value.trim();
+                if (keyword === '') {
+                    fetchInventories(); // Kembali ke semua data
+                } else {
+                    fetchInventories(keyword); // Cari berdasarkan keyword
+                }
+            });
+
+            perPageSelect.addEventListener('change', () => {
+                perPage = parseInt(perPageSelect.value);
+                currentPage = 1;
+                renderTable();
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderTable();
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                const totalPages = Math.ceil(inventories.length / perPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderTable();
+                }
+            });
+
+            // 🔹 Muat data pertama kali
+            fetchInventories();
+        });
+    </script>
 
 </x-app-layout>

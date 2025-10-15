@@ -48,25 +48,22 @@
                 <ul class="space-y-1 flex flex-col items-center">
                     <!-- Inventory -->
                     @can('warehouse')
-                        <li class="rounded-xl transition-all duration-300 hover:bg-gray-700/30 w-full"
-                            x-data="{
-                                open: {{ Route::is('index.inventory', 'indexNew.inventory', 'inventory.create', 'indexEdit.inventory', 'indexDelete.inventory') ? 'true' : 'false' }}
-                            }">
+                        <li class="rounded-xl transition-all duration-300 hover:bg-gray-700/30 w-full" x-data
+                            :class="{ 'bg-gray-800/30': $store.sidebar.activeMenu === 'inventory' }">
 
                             <!-- Main Toggle -->
-                            <a class="flex items-center justify-between p-3 text-gray-300 hover:text-white transition-colors group"
-                                href="#0" @click.prevent="open = !open; sidebarExpanded = true">
+                            <a href="#0"
+                                class="flex items-center justify-between p-3 text-gray-300 hover:text-white transition-colors group"
+                                @click.prevent=" $store.sidebar.activeMenu = ($store.sidebar.activeMenu === 'inventory' ? null : 'inventory'); sidebarExpanded = true; ">
 
                                 <div class="flex items-center">
-                                    <div class="relative">
-                                        <div
-                                            class="w-10 h-10 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-500/20">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="shrink-0 w-5 h-5 text-white"
-                                                fill="currentColor" viewBox="0 0 24 24">
-                                                <path
-                                                    d="M21.8 8.6 12.7 3a1.4 1.4 0 0 0-1.4 0L2.2 8.6a1.4 1.4 0 0 0-.7 1.2v8.5a1.4 1.4 0 0 0 .7 1.2l9.1 5.6a1.4 1.4 0 0 0 1.4 0l9.1-5.6a1.4 1.4 0 0 0 .7-1.2V9.8a1.4 1.4 0 0 0-.7-1.2ZM12 4.8l7.5 4.6-7.5 4.6-7.5-4.6L12 4.8Zm0 14.4-7.5-4.6v-3.3l7.5 4.6 7.5-4.6v3.3L12 19.2Z" />
-                                            </svg>
-                                        </div>
+                                    <div
+                                        class="w-10 h-10 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-500/20">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="shrink-0 w-5 h-5 text-white"
+                                            fill="currentColor" viewBox="0 0 24 24">
+                                            <path
+                                                d="M21.8 8.6 12.7 3a1.4 1.4 0 0 0-1.4 0L2.2 8.6a1.4 1.4 0 0 0-.7 1.2v8.5a1.4 1.4 0 0 0 .7 1.2l9.1 5.6a1.4 1.4 0 0 0 1.4 0l9.1-5.6a1.4 1.4 0 0 0 .7-1.2V9.8a1.4 1.4 0 0 0-.7-1.2ZM12 4.8l7.5 4.6-7.5 4.6-7.5-4.6L12 4.8Zm0 14.4-7.5-4.6v-3.3l7.5 4.6 7.5-4.6v3.3L12 19.2Z" />
+                                        </svg>
                                     </div>
                                     <span
                                         class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-300 transition-all">
@@ -75,7 +72,7 @@
                                 </div>
 
                                 <div class="flex shrink-0 transition-transform duration-300 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100"
-                                    :class="open ? 'rotate-180' : 'rotate-0'">
+                                    :class="$store.sidebar.activeMenu === 'inventory' ? 'rotate-180' : 'rotate-0'">
                                     <svg class="w-4 h-4 shrink-0 fill-current text-gray-400 group-hover:text-white"
                                         viewBox="0 0 12 12">
                                         <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" />
@@ -84,13 +81,14 @@
                             </a>
 
                             <!-- Submenu -->
-                            <div class="overflow-hidden transition-all duration-300" x-show="open" x-collapse>
+                            <div class="overflow-hidden transition-all duration-300"
+                                x-show="$store.sidebar.activeMenu === 'inventory'" x-collapse x-cloak>
                                 <ul
                                     class="pl-6 pb-2 space-y-1 flex flex-col items-start relative before:content-[''] before:absolute before:left-[12px] before:top-0 before:bottom-0 before:w-[2px] before:bg-gray-700/40">
 
                                     @can('view_inventory')
                                         <li class="rounded-lg transition-colors hover:bg-gray-700/20 w-full">
-                                            <a class="flex items-center p-2 text-gray-400 hover:text-white transition-colors @if (Route::is('index.inventory')) {{ 'text-violet-400 font-semibold' }} @endif"
+                                            <a class="flex items-center p-2 text-gray-400 hover:text-white transition-colors @if (Route::is('index.inventory')) text-violet-400 font-semibold @endif"
                                                 href="{{ route('index.inventory') }}">
                                                 <span class="w-1.5 h-1.5 rounded-full bg-gray-500 mr-3"></span>
                                                 <span class="text-sm">List</span>
@@ -100,7 +98,7 @@
 
                                     @can('list_inventory')
                                         <li class="rounded-lg transition-colors hover:bg-gray-700/20 w-full">
-                                            <a class="flex items-center p-2 text-gray-400 hover:text-white transition-colors @if (Route::is('indexNew.inventory', 'inventory.create')) {{ 'text-violet-400 font-semibold' }} @endif"
+                                            <a class="flex items-center p-2 text-gray-400 hover:text-white transition-colors @if (Route::is('indexNew.inventory', 'inventory.create')) text-violet-400 font-semibold @endif"
                                                 href="{{ route('indexNew.inventory') }}">
                                                 <span class="w-1.5 h-1.5 rounded-full bg-gray-500 mr-3"></span>
                                                 <span class="text-sm">New</span>
@@ -110,7 +108,7 @@
 
                                     @can('edit_inventory')
                                         <li class="rounded-lg transition-colors hover:bg-gray-700/20 w-full">
-                                            <a class="flex items-center p-2 text-gray-400 hover:text-white transition-colors @if (Route::is('indexEdit.inventory')) {{ 'text-violet-400 font-semibold' }} @endif"
+                                            <a class="flex items-center p-2 text-gray-400 hover:text-white transition-colors @if (Route::is('indexEdit.inventory')) text-violet-400 font-semibold @endif"
                                                 href="{{ route('indexEdit.inventory') }}">
                                                 <span class="w-1.5 h-1.5 rounded-full bg-gray-500 mr-3"></span>
                                                 <span class="text-sm">Edit</span>
@@ -120,7 +118,7 @@
 
                                     @can('delete_inventory')
                                         <li class="rounded-lg transition-colors hover:bg-gray-700/20 w-full">
-                                            <a class="flex items-center p-2 text-gray-400 hover:text-white transition-colors @if (Route::is('indexDelete.inventory')) {{ 'text-violet-400 font-semibold' }} @endif"
+                                            <a class="flex items-center p-2 text-gray-400 hover:text-white transition-colors @if (Route::is('indexDelete.inventory')) text-violet-400 font-semibold @endif"
                                                 href="{{ route('indexDelete.inventory') }}">
                                                 <span class="w-1.5 h-1.5 rounded-full bg-gray-500 mr-3"></span>
                                                 <span class="text-sm">Delete</span>
@@ -131,6 +129,86 @@
                             </div>
                         </li>
                     @endcan
+
+                    <!-- Supplier -->
+                    @can('warehouse')
+                        <li class="rounded-xl transition-all duration-300 hover:bg-gray-700/30 w-full" x-data
+                            :class="{ 'bg-gray-800/30': $store.sidebar.activeMenu === 'supplier' }">
+
+                            <!-- Main Toggle -->
+                            <a href="#0"
+                                class="flex items-center justify-between p-3 text-gray-300 hover:text-white transition-colors group"
+                                @click.prevent=" $store.sidebar.activeMenu = ($store.sidebar.activeMenu === 'supplier' ? null : 'supplier'); sidebarExpanded = true; ">
+
+                                <div class="flex items-center">
+                                    <div
+                                        class="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="shrink-0 w-5 h-5 text-white"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                            <circle cx="10" cy="7" r="3" />
+                                            <path d="M4 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" />
+                                            <rect x="15" y="10" width="6" height="6" rx="0.5"
+                                                ry="0.5" />
+                                            <path d="M15 13h6" />
+                                        </svg>
+                                    </div>
+                                    <span
+                                        class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-300 transition-all">
+                                        Supplier
+                                    </span>
+                                </div>
+
+                                <div class="flex shrink-0 transition-transform duration-300 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100"
+                                    :class="$store.sidebar.activeMenu === 'supplier' ? 'rotate-180' : 'rotate-0'">
+                                    <svg class="w-4 h-4 shrink-0 fill-current text-gray-400 group-hover:text-white"
+                                        viewBox="0 0 12 12">
+                                        <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" />
+                                    </svg>
+                                </div>
+                            </a>
+
+                            <!-- Submenu -->
+                            <div class="overflow-hidden transition-all duration-300"
+                                x-show="$store.sidebar.activeMenu === 'supplier'" x-collapse x-cloak>
+                                <ul
+                                    class="pl-6 pb-2 space-y-1 flex flex-col items-start relative before:content-[''] before:absolute before:left-[12px] before:top-0 before:bottom-0 before:w-[2px] before:bg-gray-700/40">
+
+                                    <li class="rounded-lg transition-colors hover:bg-gray-700/20 w-full">
+                                        <a class="flex items-center p-2 text-gray-400 hover:text-white transition-colors"
+                                            href="#">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-gray-500 mr-3"></span>
+                                            <span class="text-sm">List</span>
+                                        </a>
+                                    </li>
+
+                                    <li class="rounded-lg transition-colors hover:bg-gray-700/20 w-full">
+                                        <a class="flex items-center p-2 text-gray-400 hover:text-white transition-colors"
+                                            href="#">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-gray-500 mr-3"></span>
+                                            <span class="text-sm">New</span>
+                                        </a>
+                                    </li>
+
+                                    <li class="rounded-lg transition-colors hover:bg-gray-700/20 w-full">
+                                        <a class="flex items-center p-2 text-gray-400 hover:text-white transition-colors"
+                                            href="#">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-gray-500 mr-3"></span>
+                                            <span class="text-sm">Edit</span>
+                                        </a>
+                                    </li>
+
+                                    <li class="rounded-lg transition-colors hover:bg-gray-700/20 w-full">
+                                        <a class="flex items-center p-2 text-gray-400 hover:text-white transition-colors"
+                                            href="#">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-gray-500 mr-3"></span>
+                                            <span class="text-sm">Delete</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    @endcan
+
                 </ul>
             </div>
         </div>
@@ -166,4 +244,22 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('sidebar', {
+                activeMenu: null,
+            })
+
+            @if (Route::is(
+                    'index.inventory',
+                    'indexNew.inventory',
+                    'inventory.create',
+                    'indexEdit.inventory',
+                    'indexDelete.inventory'))
+                Alpine.store('sidebar').activeMenu = 'inventory';
+            @elseif (Route::is('index.supplier', 'indexNew.supplier', 'supplier.create', 'indexEdit.supplier', 'indexDelete.supplier'))
+                Alpine.store('sidebar').activeMenu = 'supplier';
+            @endif
+        })
+    </script>
 </div>
