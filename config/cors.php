@@ -60,7 +60,7 @@ return [
     */
     'allowed_origins' => array_filter(explode(
         ',',
-        env('CORS_ALLOWED_ORIGINS', '*')
+        env('CORS_ALLOWED_ORIGINS', '*,https://mmp.integrated-os.cloud')
     )),
 
     /*
