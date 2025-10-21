@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\InventoryController;
 use App\Http\Controllers\API\SupplierController;
 
@@ -23,6 +24,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Version 1 API Routes
 Route::prefix('v1')->group(function () {
+    
+    // Authentication API Routes (Public)
+    Route::prefix('auth')->group(function () {
+        Route::post('/login', [AuthController::class, 'login']);
+        // Route::post('/register', [AuthController::class, 'register']);
+        Route::post('/logout', [AuthController::class, 'logout']);
+    });
+    
+    // Authentication API Routes (Protected)
+    // Route::prefix('auth')->middleware('auth:sanctum')->group(function () {
+    // });
     
     // Inventory API Routes
     Route::prefix('inventory')->group(function () {

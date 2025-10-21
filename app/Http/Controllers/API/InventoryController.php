@@ -131,27 +131,23 @@ class InventoryController extends Controller
     public function show(string $id): JsonResponse
     {
         try {
+            // Find inventory by exact ID using findOrFail for proper 404 handling
             $inventory = MInventory::where('is_active', 1)
-                ->where('id_inventory', 'LIKE', "%{$id}%")
-                ->get();
+                ->where('id_inventory', $id)
+                ->firstOrFail();
 
-            // ✅ Jika data kosong, kirimkan respons sukses dengan pesan "No Data"
-            if ($inventory->isEmpty()) {
-                return response()->json([
-                    'data' => [],
-                    'message' => 'No data found.',
-                    'status' => HttpStatus::HTTP_OK
-                ], HttpStatus::HTTP_OK);
-            }
-
-            // ✅ Jika data ditemukan
             return response()->json([
                 'data' => $inventory,
                 'message' => 'Data retrieved successfully',
                 'status' => HttpStatus::HTTP_OK
             ], HttpStatus::HTTP_OK);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return $this->errorResponse(
+                'Inventory item not found',
+                HttpStatus::HTTP_NOT_FOUND,
+                $e
+            );
         } catch (\Exception $e) {
-            // ✅ Tangani error sistem
             return $this->errorResponse(
                 'Failed to retrieve inventory item',
                 HttpStatus::HTTP_INTERNAL_SERVER_ERROR,
